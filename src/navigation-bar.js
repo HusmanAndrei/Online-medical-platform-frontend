@@ -32,10 +32,21 @@ const NavigationBar = () => (
                     </DropdownToggle>
                     <DropdownMenu right >
 
-                        <DropdownItem>
+                        {/* <DropdownItem>
                             <NavLink href="/person">Persons</NavLink>
+                        </DropdownItem> */}
+                        <DropdownItem>
+                            <NavLink href="/patient">Patients</NavLink>
                         </DropdownItem>
-
+                        <DropdownItem>
+                            <NavLink href="/doctor">Doctors</NavLink>
+                        </DropdownItem>
+                        <DropdownItem>
+                            <NavLink href="/caregiver">Caregivers</NavLink>
+                        </DropdownItem>
+                        <DropdownItem>
+                            <NavLink href="/medication">Medications</NavLink>
+                        </DropdownItem>
 
                     </DropdownMenu>
                 </UncontrolledDropdown>

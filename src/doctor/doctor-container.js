@@ -1,5 +1,6 @@
 import React from 'react';
 import APIResponseErrorMessage from "../commons/errorhandling/api-response-error-message";
+import {BrowserRouter as Router, Route, Redirect, Switch} from 'react-router-dom'
 import {
     Button,
     Card,
@@ -10,14 +11,14 @@ import {
     ModalHeader,
     Row
 } from 'reactstrap';
-import PersonForm from "./components/person-form";
+import DoctorForm from "./components/doctor-form";
 
-import * as API_USERS from "./api/person-api"
-import PersonTable from "./components/person-table";
+import * as API_USERS from "./api/doctor-api"
+import DoctorTable from "./components/doctor-table";
 
 
 
-class PersonContainer extends React.Component {
+class DoctorContainer extends React.Component {
 
     constructor(props) {
         super(props);
@@ -29,16 +30,23 @@ class PersonContainer extends React.Component {
             tableData: [],
             isLoaded: false,
             errorStatus: 0,
-            error: null
+            error: null,
+            isDoctor: (localStorage.getItem("role") === "DOCTOR")
         };
     }
 
     componentDidMount() {
-        this.fetchPersons();
+        
+        this.fetchDoctors();
     }
 
-    fetchPersons() {
-        return API_USERS.getPersons((result, status, err) => {
+    fetchDoctors() {
+        console.log(localStorage.getItem("role"))
+        if(localStorage.getItem("role") !== "DOCTOR"){
+            return <Redirect to="/login"/>;
+        }
+
+        return API_USERS.getDoctors((result, status, err) => {
 
             if (result !== null && status === 200) {
                 this.setState({
@@ -64,26 +72,28 @@ class PersonContainer extends React.Component {
             isLoaded: false
         });
         this.toggleForm();
-        this.fetchPersons();
+        this.fetchDoctors();
     }
 
     render() {
         return (
             <div>
                 <CardHeader>
-                    <strong> Person Management </strong>
+                    <strong> Doctor Management </strong>
                 </CardHeader>
                 <Card>
-                    <br/>
+                    <br/>{
+                    this.state.isDoctor?(
                     <Row>
                         <Col sm={{size: '8', offset: 1}}>
-                            <Button color="primary" onClick={this.toggleForm}>Add Person </Button>
+                            <Button color="primary" onClick={this.toggleForm}>Add Doctor </Button>
                         </Col>
-                    </Row>
-                    <br/>
+                    </Row>):
+                    <br/>}
                     <Row>
+                    
                         <Col sm={{size: '8', offset: 1}}>
-                            {this.state.isLoaded && <PersonTable tableData = {this.state.tableData}/>}
+                            {this.state.isLoaded && <DoctorTable tableData = {this.state.tableData}/>}
                             {this.state.errorStatus > 0 && <APIResponseErrorMessage
                                                             errorStatus={this.state.errorStatus}
                                                             error={this.state.error}
@@ -94,9 +104,9 @@ class PersonContainer extends React.Component {
 
                 <Modal isOpen={this.state.selected} toggle={this.toggleForm}
                        className={this.props.className} size="lg">
-                    <ModalHeader toggle={this.toggleForm}> Add Person: </ModalHeader>
+                    <ModalHeader toggle={this.toggleForm}> Add Doctor: </ModalHeader>
                     <ModalBody>
-                        <PersonForm reloadHandler={this.reload}/>
+                        <DoctorForm reloadHandler={this.reload}/>
                     </ModalBody>
                 </Modal>
 
@@ -107,4 +117,4 @@ class PersonContainer extends React.Component {
 }
 
 
-export default PersonContainer;
+export default DoctorContainer;

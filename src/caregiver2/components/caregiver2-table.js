@@ -3,14 +3,29 @@ import Table from "../../commons/tables/table";
 
 
 const columns = [
-    {
+    
+    {   
+        Header: 'ID',
+        accessor: 'id'
+    },
+    
+    {   
         Header: 'Name',
-        accessor: 'name',
+        accessor: 'name'
     },
     {
-        Header: 'Age',
-        accessor: 'age',
-    }
+        Header: 'Address',
+        accessor: 'address',
+    },
+    {
+        Header: 'Birth Date',
+        accessor: 'birthDate',
+    },
+    {
+        Header: 'Gender',
+        accessor: 'gender'
+    },
+    
 ];
 
 const filters = [
@@ -19,7 +34,7 @@ const filters = [
     }
 ];
 
-class PersonTable extends React.Component {
+class CaregiverTable2 extends React.Component {
 
     constructor(props) {
         super(props);
@@ -31,7 +46,7 @@ class PersonTable extends React.Component {
     render() {
         return (
             <Table
-                data={this.state.tableData}
+                data={this.props.tableData}
                 columns={columns}
                 search={filters}
                 pageSize={5}
@@ -40,4 +55,4 @@ class PersonTable extends React.Component {
     }
 }
 
-export default PersonTable;
+export default CaregiverTable2;

@@ -63,14 +63,19 @@ class Table extends Component {
             return {};
     }
 
-
+    componentWillReceiveProps(nextProps){
+        console.log("receiving table ", nextProps)
+            this.state.data = nextProps.data
+    }
 
     render() {
         let data = this.state.data ? this.state.data.filter(data => this.filter(data)) : [];
 
         return (
             <div>
-                <Row>
+                <Row style={{
+                    width: '1000px'
+                }}>
                     {
                         this.state.search.map((header, index) => {
                             return (
@@ -94,7 +99,8 @@ class Table extends Component {
                             getTrProps={this.getTRPropsType}
                             showPagination={true}
                             style={{
-                                height: '300px'
+                                height: '300px',
+                                width: '1000px'
                             }}
                         />
                     </Col>

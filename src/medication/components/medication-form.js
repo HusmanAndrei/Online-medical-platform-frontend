@@ -1,14 +1,14 @@
 import React from 'react';
-import validate from "./validators/person-validators";
+import validate from "./validators/medication-validators";
 import Button from "react-bootstrap/Button";
-import * as API_USERS from "../api/person-api";
+import * as API_USERS from "../api/medication-api";
 import APIResponseErrorMessage from "../../commons/errorhandling/api-response-error-message";
 import {Col, Row} from "reactstrap";
 import { FormGroup, Input, Label} from 'reactstrap';
 
 
 
-class PersonForm extends React.Component {
+class MedicationForm extends React.Component {
 
     constructor(props) {
         super(props);
@@ -20,38 +20,29 @@ class PersonForm extends React.Component {
             errorStatus: 0,
             error: null,
 
-            formIsValid: false,
+            formIsValid: true,
 
             formControls: {
-                name: {
+                name: {     
                     value: '',
                     placeholder: 'What is your name?...',
-                    valid: false,
+                    valid: true,
                     touched: false,
                     validationRules: {
                         minLength: 3,
                         isRequired: true
                     }
                 },
-                email: {
+                sideEffects: {
                     value: '',
-                    placeholder: 'Email...',
-                    valid: false,
-                    touched: false,
-                    validationRules: {
-                        emailValidator: true
-                    }
-                },
-                age: {
-                    value: '',
-                    placeholder: 'Age...',
-                    valid: false,
+                    placeholder: 'SideEffects...',
+                    valid: true,
                     touched: false,
                 },
-                address: {
+                dosage: {
                     value: '',
-                    placeholder: 'Cluj, Zorilor, Str. Lalelelor 21...',
-                    valid: false,
+                    placeholder: 'Dosage...',
+                    valid: true,
                     touched: false,
                 },
             }
@@ -92,30 +83,49 @@ class PersonForm extends React.Component {
 
     };
 
-    registerPerson(person) {
-        return API_USERS.postPerson(person, (result, status, error) => {
-            if (result !== null && (status === 200 || status === 201)) {
-                console.log("Successfully inserted person with id: " + result);
-                this.reloadHandler();
-            } else {
-                this.setState(({
-                    errorStatus: status,
-                    error: error
-                }));
-            }
-        });
-    }
+    
 
     handleSubmit() {
-        let person = {
+        let medication = {
             name: this.state.formControls.name.value,
-            email: this.state.formControls.email.value,
-            age: this.state.formControls.age.value,
-            address: this.state.formControls.address.value
+            dosage: this.state.formControls.dosage.value,
+            sideEffects: this.state.formControls.sideEffects.value,
         };
 
-        console.log(person);
-        this.registerPerson(person);
+        console.log(medication);
+        this.props.finishEdit(medication);
+    }
+
+    componentDidMount(){
+
+            console.log("component mounting")
+            this.updateFields();
+        
+    }
+
+    updateFields = () => {
+        if (this.props.medication){
+            const values = this.props.medication;
+            const formControls = this.state.formControls;
+            console.log(values);
+            this.setState({
+                formControls : {
+                    name : {
+                        ...formControls.name,
+                        value : values.name
+                    },
+                    dosage : {
+                        ...formControls.dosage,
+                        value : values.dosage
+                    },
+                    sideEffects : {
+                        ...formControls.sideEffects,
+                        value : values.sideEffects
+                    },
+                    
+                }
+            })
+        }
     }
 
     render() {
@@ -126,7 +136,7 @@ class PersonForm extends React.Component {
                     <Label for='nameField'> Name: </Label>
                     <Input name='name' id='nameField' placeholder={this.state.formControls.name.placeholder}
                            onChange={this.handleChange}
-                           defaultValue={this.state.formControls.name.value}
+                           value={this.state.formControls.name.value}
                            touched={this.state.formControls.name.touched? 1 : 0}
                            valid={this.state.formControls.name.valid}
                            required
@@ -135,44 +145,30 @@ class PersonForm extends React.Component {
                     <div className={"error-message row"}> * Name must have at least 3 characters </div>}
                 </FormGroup>
 
-                <FormGroup id='email'>
-                    <Label for='emailField'> Email: </Label>
-                    <Input name='email' id='emailField' placeholder={this.state.formControls.email.placeholder}
+                <FormGroup id='sideEffects'>
+                    <Label for='sideEffectsField'> SideEffects: </Label>
+                    <Input name='sideEffects' id='sideEffectsField' placeholder={this.state.formControls.sideEffects.placeholder}
                            onChange={this.handleChange}
-                           defaultValue={this.state.formControls.email.value}
-                           touched={this.state.formControls.email.touched? 1 : 0}
-                           valid={this.state.formControls.email.valid}
-                           required
-                    />
-                    {this.state.formControls.email.touched && !this.state.formControls.email.valid &&
-                    <div className={"error-message"}> * Email must have a valid format</div>}
-                </FormGroup>
-
-                <FormGroup id='address'>
-                    <Label for='addressField'> Address: </Label>
-                    <Input name='address' id='addressField' placeholder={this.state.formControls.address.placeholder}
-                           onChange={this.handleChange}
-                           defaultValue={this.state.formControls.address.value}
-                           touched={this.state.formControls.address.touched? 1 : 0}
-                           valid={this.state.formControls.address.valid}
+                           value={this.state.formControls.sideEffects.value}
+                           touched={this.state.formControls.sideEffects.touched? 1 : 0}
+                           valid={this.state.formControls.sideEffects.valid}
                            required
                     />
                 </FormGroup>
 
-                <FormGroup id='age'>
-                    <Label for='ageField'> Age: </Label>
-                    <Input name='age' id='ageField' placeholder={this.state.formControls.age.placeholder}
-                           min={0} max={100} type="number"
+                <FormGroup id='dosage'>
+                    <Label for='dosageField'> Dosage: </Label>
+                    <Input name='dosage' id='dosageField' placeholder={this.state.formControls.dosage.placeholder}
                            onChange={this.handleChange}
-                           defaultValue={this.state.formControls.age.value}
-                           touched={this.state.formControls.age.touched? 1 : 0}
-                           valid={this.state.formControls.age.valid}
+                           value={this.state.formControls.dosage.value}
+                           touched={this.state.formControls.dosage.touched? 1 : 0}
+                           valid={this.state.formControls.dosage.valid}
                            required
                     />
-                </FormGroup>
+                </FormGroup>              
 
                     <Row>
-                        <Col sm={{size: '4', offset: 8}}>
+                        <Col sm={{size: '3', offset: 8}}>
                             <Button type={"submit"} disabled={!this.state.formIsValid} onClick={this.handleSubmit}>  Submit </Button>
                         </Col>
                     </Row>
@@ -186,4 +182,4 @@ class PersonForm extends React.Component {
     }
 }
 
-export default PersonForm;
+export default MedicationForm;
